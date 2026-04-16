@@ -1,0 +1,13 @@
+Apixaban
+Aspirin
+Atenolol
+Candesartan
+Captopril
+Carvedilol
+Dipyridamole
+Edoxaban
+Quinapril
+Ramipril
+Rivaroxaban
+Ticagrelor
+Warfarin

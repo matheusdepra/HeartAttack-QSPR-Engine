@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv
+venv/
+env/
+.env
+
+# Data & Results (Generated files)
+data/*.db
+data/plots/*.png
+data/qspr_results/
+data/dumps/
+data/logs/
+
+# IDEs
+.vscode/
+.idea/
+.DS_Store
+
+# Scratch files
+scratch/
+tests/test_*.py
