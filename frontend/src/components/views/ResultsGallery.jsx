@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
-const API_STATIC = 'http://localhost:8000/plots';
-const API_BASE = 'http://localhost:8000/api';
+import { API_BASE, API_STATIC } from '../../config';
 
 const ResultsGallery = ({ analysis, setView, resetWizard }) => {
   const analysisId = analysis?.id;

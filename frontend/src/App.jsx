@@ -13,7 +13,7 @@ import UserManagementView from './components/views/UserManagementView';
 import DocumentationView from './components/views/DocumentationView';
 import LoadingOverlay from './components/common/LoadingOverlay';
 
-const API_BASE = 'http://localhost:8000/api';
+import { API_BASE } from './config';
 
 function App() {
   const [user, setUser] = useState(null);

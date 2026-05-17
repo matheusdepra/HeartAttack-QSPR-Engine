@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const API_BASE = 'http://localhost:8000/api';
+import { API_BASE } from '../../config';
 
 const HistoryView = ({ onViewAnalysis, user }) => {
   const [analyses, setAnalyses] = useState([]);
