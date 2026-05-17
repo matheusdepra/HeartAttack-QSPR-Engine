@@ -20,23 +20,24 @@ from scipy.stats import linregress
 
 from calculators.topological import INDEX_NAMES, INDEX_TITLES, INDEX_SYMBOLS
 
-PROPERTY_COLUMNS = ["BP", "VP", "EV", "FP", "MR", "ST", "MV"]
+PROPERTY_COLUMNS = ["BP", "VP", "EV", "FP", "MR", "ST", "MV", "MW", "Complexity"]
 
 # Map DB column names → uppercase labels used in the article
 DB_PROP_MAP = {
     "bp": "BP", "vp": "VP", "ev": "EV",
     "fp": "FP", "mr": "MR", "st": "ST", "mv": "MV",
+    "mw": "MW", "complexity": "Complexity"
 }
 DB_INDEX_MAP = {
+    "ti_abc": "ABC", "ti_ga": "GA",
     "ti_ri": "RI", "ti_rr": "RR", "ti_h": "H", "ti_sci": "SCI",
     "ti_m1": "M1", "ti_m2": "M2", "ti_hm": "HM", "ti_rm2": "RM2",
     "ti_f": "F",  "ti_hf": "HF",
 }
 
 TABLE_NUMBER_BY_INDEX = {
-    "RI": 3, "RR": 4, "H": 5, "SCI": 6,
-    "M1": 7, "M2": 8, "HM": 9, "RM2": 10,
-    "F": 11, "HF": 12,
+    "ABC": 5, "RA": 6, "S": 7, "GA": 8, "M1": 9, "M2": 10, "HM": 11, "H": 12, "F": 13,
+    "RI": 3, "RR": 4, "SCI": 6, "RM2": 10, "HF": 12,
 }
 
 
@@ -45,10 +46,37 @@ TABLE_NUMBER_BY_INDEX = {
 # ---------------------------------------------------------------------------
 
 def export_db_to_dataframe(session) -> pd.DataFrame:
-    """Pull all drugs from the SQLite session into a tidy DataFrame."""
+    """Pull all drugs from the master SQLite table into a tidy DataFrame."""
     from db.models import Drug
+    drugs = session.query(Drug).all()
+    return _build_df_from_records(drugs)
+
+def export_analysis_to_dataframe(session, analysis_id: int) -> pd.DataFrame:
+    """Pull drugs for a specific analysis, using snapshots/overwrites."""
+    from db.models import AnalysisItem, Drug
+    items = session.query(AnalysisItem).filter_by(analysis_id=analysis_id).all()
+    
     rows = []
-    for drug in session.query(Drug).all():
+    for item in items:
+        # Get drug for indices (indices are not overwritten in AnalysisItem)
+        drug = session.query(Drug).get(item.drug_id)
+        row = {"Drug": drug.name, "SMILES": drug.smiles}
+        
+        # Pull properties from the AnalysisItem (snapshot)
+        for db_col, label in DB_PROP_MAP.items():
+            row[label] = getattr(item, db_col, None)
+            
+        # Pull indices from the master Drug record
+        for db_col, label in DB_INDEX_MAP.items():
+            row[label] = getattr(drug, db_col, None)
+        rows.append(row)
+        
+    df = pd.DataFrame(rows)
+    return _cleanup_numeric_cols(df)
+
+def _build_df_from_records(drugs) -> pd.DataFrame:
+    rows = []
+    for drug in drugs:
         row = {"Drug": drug.name, "SMILES": drug.smiles}
         for db_col, label in DB_PROP_MAP.items():
             row[label] = getattr(drug, db_col, None)
@@ -56,7 +84,9 @@ def export_db_to_dataframe(session) -> pd.DataFrame:
             row[label] = getattr(drug, db_col, None)
         rows.append(row)
     df = pd.DataFrame(rows)
-    # Convert all numeric columns
+    return _cleanup_numeric_cols(df)
+
+def _cleanup_numeric_cols(df: pd.DataFrame) -> pd.DataFrame:
     for col in PROPERTY_COLUMNS + INDEX_NAMES:
         if col in df.columns:
             df[col] = pd.to_numeric(df[col], errors="coerce")
@@ -232,11 +262,16 @@ def build_report(
     output_dir: str = "data/qspr_results",
     min_points: int = 3,
     top_k: int = 3,
+    analysis_id: int | None = None,
 ) -> dict[str, Path]:
     out_dir = Path(output_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    df = export_db_to_dataframe(session)
+    if analysis_id:
+        df = export_analysis_to_dataframe(session, analysis_id)
+    else:
+        df = export_db_to_dataframe(session)
+        
     df.to_csv(out_dir / "qspr_data.csv", index=False)
 
     raw = run_qspr(df, min_points=min_points)

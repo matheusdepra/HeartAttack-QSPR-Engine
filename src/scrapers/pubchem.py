@@ -26,6 +26,16 @@ def _get_json(url: str, delay: float = 0.2) -> dict:
         logger.error(f"Error fetching {url}: {e}")
         return {}
 
+def get_cid_by_smiles(smiles: str) -> Optional[str]:
+    """Fetch CID for a given SMILES string"""
+    encoded = urllib.parse.quote(smiles.strip())
+    url = f"{PUBCHEM_REST}/compound/smiles/{encoded}/cids/JSON"
+    data = _get_json(url)
+    cids = data.get("IdentifierList", {}).get("CID", [])
+    if cids:
+        return str(cids[0])
+    return None
+
 def get_cid(drug_name: str) -> Optional[str]:
     """Fetch CID for a given drug name"""
     encoded = urllib.parse.quote(drug_name.strip())
@@ -207,11 +217,14 @@ def process_drug_pubchem(drug_name: str) -> Dict[str, Any]:
     # Extract properties
     bp, bp_src = find_property_in_view(view_data, ["Boiling Point"])
     if bp is None and smiles:
+        logger.info(f"Boiling Point missing in PubChem for {drug_name}. Attempting EPI Suite fallback...")
         if not epi_data: epi_data = fetch_epi_suite_data(smiles)
         if epi_data.get('bp') is not None:
             bp = epi_data['bp']
             bp_src = "Calculated (EPI Suite)"
+            logger.info(f"EPI Suite BP fallback SUCCESS for {drug_name}: {bp}")
         else:
+            logger.warning(f"EPI Suite BP fallback FAILED for {drug_name}. Using RDKit estimator.")
             calc_bp = calculate_theoretical_bp(smiles)
             if calc_bp is not None:
                 bp = calc_bp
@@ -219,10 +232,14 @@ def process_drug_pubchem(drug_name: str) -> Dict[str, Any]:
             
     vp, vp_src = find_property_in_view(view_data, ["Vapor Pressure"])
     if vp is None and smiles:
+        logger.info(f"Vapor Pressure missing in PubChem for {drug_name}. Attempting EPI Suite fallback...")
         if not epi_data: epi_data = fetch_epi_suite_data(smiles)
         if epi_data.get('vp') is not None:
             vp = epi_data['vp']
             vp_src = "Calculated (EPI Suite)"
+            logger.info(f"EPI Suite VP fallback SUCCESS for {drug_name}: {vp}")
+        else:
+            logger.warning(f"EPI Suite VP fallback FAILED for {drug_name}.")
             
     ev, ev_src = find_property_in_view(view_data, ["Enthalpy of Vaporization", "Heat of Vaporization"])
     # EPI Suite doesn't provide EV directly — RDKit fallback only
@@ -272,9 +289,34 @@ def process_drug_pubchem(drug_name: str) -> Dict[str, Any]:
             from rdkit.Chem import Descriptors
             mol = Chem.MolFromSmiles(smiles)
             if mol:
-                mw = Descriptors.MolWt(mol)
-                mv = round(mw / 1.0, 2)   # assumes density ~ 1 g/cm3
+                temp_mw = Descriptors.MolWt(mol)
+                mv = round(temp_mw / 1.0, 2)   # assumes density ~ 1 g/cm3
                 mv_src = "Calculated (MW/density=1 Approximation)"
+        except Exception:
+            pass
+            
+    mw, mw_src = find_property_in_view(view_data, ["Molecular Weight", "Weight"])
+    if mw is None and smiles:
+        try:
+            from rdkit import Chem
+            from rdkit.Chem import Descriptors
+            mol = Chem.MolFromSmiles(smiles)
+            if mol:
+                mw = round(Descriptors.MolWt(mol), 2)
+                mw_src = "Calculated (RDKit)"
+        except Exception:
+            pass
+
+    complexity, complexity_src = find_property_in_view(view_data, ["Complexity"])
+    if complexity is None and smiles:
+        # RDKit doesn't have a direct equivalent to PubChem's exact complexity, but BertzCT is often used as a proxy
+        try:
+            from rdkit import Chem
+            from rdkit.Chem.GraphDescriptors import BertzCT
+            mol = Chem.MolFromSmiles(smiles)
+            if mol:
+                complexity = round(BertzCT(mol), 2)
+                complexity_src = "Calculated (RDKit BertzCT Proxy)"
         except Exception:
             pass
     
@@ -288,4 +330,6 @@ def process_drug_pubchem(drug_name: str) -> Dict[str, Any]:
         "mr": mr, "mr_source": mr_src,
         "st": st, "st_source": st_src,
         "mv": mv, "mv_source": mv_src,
+        "mw": mw, "mw_source": mw_src,
+        "complexity": complexity, "complexity_source": complexity_src,
     }

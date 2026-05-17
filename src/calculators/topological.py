@@ -16,9 +16,11 @@ from typing import Optional
 import numpy as np
 from rdkit import Chem
 
-INDEX_NAMES = ["RI", "RR", "H", "SCI", "M1", "M2", "HM", "RM2", "F", "HF"]
+INDEX_NAMES = ["ABC", "GA", "RI", "RR", "H", "SCI", "M1", "M2", "HM", "RM2", "F", "HF"]
 
 INDEX_TITLES = {
+    "ABC": "Atom-Bond Connectivity Index ABC(G)",
+    "GA":  "Geometric-Arithmetic Index GA(G)",
     "RI":  "Randic Index R(G)",
     "RR":  "Reciprocal Randic Index RR(G)",
     "H":   "Harmonic Index H(G)",
@@ -32,6 +34,8 @@ INDEX_TITLES = {
 }
 
 INDEX_SYMBOLS = {
+    "ABC": "ABC(G)",
+    "GA":  "GA(G)",
     "RI":  "R(G)",
     "RR":  "RR(G)",
     "H":   "H(G)",
@@ -58,9 +62,12 @@ def edge_partition_from_mol(mol: Chem.Mol) -> Counter:
 
 
 def calc_indices_from_partition(part: Counter) -> dict[str, float]:
-    """Calculate all 10 topological indices from an edge partition."""
+    """Calculate all 12 topological indices from an edge partition."""
     values = {k: 0.0 for k in INDEX_NAMES}
     for (du, dv), freq in part.items():
+        if du * dv > 0:
+            values["ABC"] += freq * np.sqrt((du + dv - 2) / (du * dv))
+            values["GA"]  += freq * ((2.0 * np.sqrt(du * dv)) / (du + dv))
         values["RI"]  += freq * (1.0 / np.sqrt(du * dv))
         values["RR"]  += freq * np.sqrt(du * dv)
         values["H"]   += freq * (2.0 / (du + dv))

@@ -9,6 +9,8 @@ from __future__ import annotations
 import math
 from pathlib import Path
 
+import matplotlib
+matplotlib.use('Agg')  # Force non-interactive backend for server environments
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns

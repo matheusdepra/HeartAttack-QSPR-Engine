@@ -45,6 +45,8 @@ def run_pipeline(source_url: str = 'data/raw/drogas_iniciais.txt'):
             name=name,
             source_url=source_url,
             **pubchem_data,
+            ti_abc=ti["ABC"] if ti else None,
+            ti_ga=ti["GA"]  if ti else None,
             ti_ri=ti["RI"]  if ti else None,
             ti_rr=ti["RR"]  if ti else None,
             ti_h=ti["H"]    if ti else None,
