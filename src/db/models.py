@@ -160,8 +160,20 @@ def init_db(engine):
             )
             session.add(admin_user)
             session.commit()
+            
+        # Check if drugs table is empty, if so seed baseline drugs
+        drug_count = session.query(Drug).count()
+        if drug_count == 0:
+            print("Seeding baseline research drugs database...")
+            from db.seeds import BASELINE_DRUGS
+            for d_data in BASELINE_DRUGS:
+                drug = Drug(**d_data)
+                session.add(drug)
+            session.commit()
+            print("Successfully seeded all 25 baseline drugs!")
+            
     except Exception as e:
-        print(f"Error seeding admin: {e}")
+        print(f"Error seeding admin/drugs: {e}")
     finally:
         session.close()
 

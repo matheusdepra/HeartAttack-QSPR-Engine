@@ -96,11 +96,25 @@ def list_drugs(db=Depends(get_db)):
 @app.post("/api/drugs/sync")
 def sync_drug(name: str, smiles: Optional[str] = None, db=Depends(get_db)):
     try:
+        # Check if the drug already exists in the database
+        existing = db.query(Drug).filter(Drug.name.ilike(name)).first()
+        if existing:
+            return existing
+            
         data = {}
-        try:
-            data = process_drug_pubchem(name)
-        except Exception:
-            pass
+        # Local fallback for baseline research drugs to support offline OCI instances
+        from db.seeds import BASELINE_DRUGS
+        baseline_match = next((d for d in BASELINE_DRUGS if d["name"].lower() == name.lower()), None)
+        
+        if baseline_match:
+            data = baseline_match.copy()
+            if smiles:
+                data["smiles"] = smiles
+        else:
+            try:
+                data = process_drug_pubchem(name)
+            except Exception:
+                pass
             
         final_smiles = smiles or data.get("smiles")
         if smiles:
