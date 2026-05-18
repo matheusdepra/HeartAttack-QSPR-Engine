@@ -2,15 +2,15 @@
 const getApiHost = () => {
   const { hostname, protocol } = window.location;
   
-  // If local development, talk to localhost:8000
+  // If local development, talk to localhost:5555
   if (hostname === 'localhost' || hostname === '127.0.0.1') {
-    return 'http://localhost:8000';
+    return 'http://localhost:5555';
   }
   
-  // If running directly on OCI using ports (Vite on 5173, backend on 8000)
+  // If running directly on OCI using ports (Vite on 5173, backend on 5555)
   const hasPort = window.location.port && window.location.port !== '80' && window.location.port !== '443';
   if (hasPort) {
-    return `${protocol}//${hostname}:8000`;
+    return `${protocol}//${hostname}:5555`;
   }
   
   // If Nginx reverse proxy is set up to route requests via port 80/443 without specifying port

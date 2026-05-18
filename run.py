@@ -18,7 +18,7 @@ def run_platform():
             "--reload", 
             "--reload-dir", ".",  # Watch only the src directory
             "--host", "0.0.0.0", 
-            "--port", "8000"
+            "--port", "5555"
         ],
         cwd=root_dir / "src",
         env=backend_env
@@ -45,7 +45,7 @@ def run_platform():
     )
     
     print("\n✅ CardioQSPR Platform is running!")
-    print("🔗 Backend API: http://localhost:8000/docs")
+    print("🔗 Backend API: http://localhost:5555/docs")
     print("🔗 Frontend UI: http://localhost:5173")
     print("\nPress Ctrl+C to stop both servers.")
     
