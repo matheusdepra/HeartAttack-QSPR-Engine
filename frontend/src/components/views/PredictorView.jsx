@@ -81,24 +81,28 @@ const PredictorView = () => {
           <h3 style={{ fontSize: '14px', marginBottom: '12px', paddingBottom: '8px', borderBottom: '1px solid var(--border-light)' }}>
             Calculated Topological Indices
           </h3>
-          <table className="data-table" style={{ maxWidth: '600px' }}>
-            <thead>
-              <tr>
-                <th style={{ width: '80px' }}>Symbol</th>
-                <th>Index Name</th>
-                <th style={{ textAlign: 'right' }}>Value</th>
-              </tr>
-            </thead>
-            <tbody>
-              {Object.entries(results).map(([key, value]) => (
-                <tr key={key}>
-                  <td className="mono" style={{ fontWeight: 600 }}>{key}</td>
-                  <td>{indexNames[key] || key}</td>
-                  <td className="mono" style={{ textAlign: 'right' }}>{value.toFixed(4)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div className="panel table-panel" style={{ maxWidth: '600px' }}>
+            <div className="table-scroll">
+              <table className="data-table">
+                <thead>
+                  <tr>
+                    <th style={{ width: '80px' }}>Symbol</th>
+                    <th>Index Name</th>
+                    <th className="text-right">Value</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {Object.entries(results).map(([key, value]) => (
+                    <tr key={key}>
+                      <td className="mono" style={{ fontWeight: 600 }}>{key}</td>
+                      <td>{indexNames[key] || key}</td>
+                      <td className="mono text-right">{value.toFixed(4)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       )}
     </div>

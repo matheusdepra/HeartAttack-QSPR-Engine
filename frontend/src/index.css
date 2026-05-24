@@ -1,27 +1,27 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
 :root {
-  /* VSCode / GitHub Dark inspired flat theme */
-  --bg-main: #0d1117;
-  --bg-sidebar: #161b22;
-  --bg-navbar: #010409;
-  --bg-panel: #161b22;
-  --bg-input: #0d1117;
-  --bg-hover: #21262d;
+  /* Premium Deep Slate Dark Theme */
+  --bg-main: #07090e;
+  --bg-sidebar: #0f131a;
+  --bg-navbar: #0a0d14;
+  --bg-panel: #0f131a;
+  --bg-input: #07090e;
+  --bg-hover: #1e2638;
   
-  --primary: #58a6ff;
-  --primary-hover: #3182ce;
-  --secondary: #8b949e;
+  --primary: #38bdf8;       /* Vibrant neon sky blue */
+  --primary-hover: #0ea5e9; /* Sky blue active */
+  --secondary: #94a3b8;     /* Slate text secondary */
   
-  --text-primary: #c9d1d9;
-  --text-secondary: #8b949e;
-  --text-dim: #6e7681;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-dim: #64748b;
   
-  --border-light: #30363d;
-  --border-focus: #58a6ff;
+  --border-light: #1e293b;
+  --border-focus: #38bdf8;
   
-  --sidebar-width: 220px;
-  --navbar-height: 48px;
+  --sidebar-width: 250px;
+  --navbar-height: 0px;
 }
 
 * {
@@ -99,6 +99,19 @@ code, .mono {
   padding: 1rem;
 }
 
+.table-panel {
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.table-scroll,
+.table-wrapper {
+  overflow: auto;
+  flex: 1;
+}
+
 .btn {
   display: inline-flex;
   align-items: center;
@@ -142,34 +155,137 @@ code, .mono {
 }
 
 /* Data Tables */
-.data-table {
+.data-table,
+.table {
   width: 100%;
   border-collapse: collapse;
   font-size: 13px;
 }
 
-.data-table th {
+.data-table th,
+.table th {
   background: var(--bg-panel);
-  border-bottom: 1px solid var(--border-light);
-  border-right: 1px solid var(--border-light);
-  padding: 8px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 12px 16px;
   text-align: left;
+  font-size: 11px;
   font-weight: 600;
-  color: var(--text-secondary);
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
   position: sticky;
   top: 0;
   z-index: 1;
 }
 
-.data-table td {
-  border-bottom: 1px solid var(--border-light);
-  border-right: 1px solid var(--border-light);
-  padding: 6px 12px;
+.data-table td,
+.table td {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 10px 16px;
   color: var(--text-primary);
+  font-size: 13px;
 }
 
-.data-table tbody tr:hover {
-  background: var(--bg-hover);
+.data-table tbody tr,
+.table tbody tr {
+  transition: background 0.1s ease;
+}
+
+.data-table tbody tr:hover,
+.table tbody tr:hover {
+  background: rgba(56, 189, 248, 0.04);
+}
+
+.data-table .sticky-col,
+.table .sticky-col {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  background: var(--bg-panel);
+}
+
+.data-table tbody .sticky-col,
+.table tbody .sticky-col {
+  z-index: 1;
+}
+
+.table-input {
+  background: rgba(5, 8, 14, 0.85);
+  border: 1px solid rgba(30, 41, 59, 0.9);
+  color: var(--text-primary);
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  line-height: 1.2;
+  min-height: 36px;
+  text-align: right;
+  transition: border-color 0.12s ease, background-color 0.12s ease, box-shadow 0.12s ease;
+}
+
+.table-input:hover {
+  border-color: rgba(71, 85, 105, 0.9);
+}
+
+.table-input:focus {
+  background: rgba(8, 12, 20, 0.96);
+  border-color: rgba(56, 189, 248, 0.75);
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.12);
+}
+
+.table-input-missing {
+  background: rgba(120, 53, 15, 0.18);
+  border-color: rgba(245, 158, 11, 0.28);
+  color: #fde68a;
+}
+
+.table-input-edited {
+  border-color: rgba(56, 189, 248, 0.45);
+  background: rgba(8, 28, 44, 0.55);
+}
+
+/* Alignment utilities for table cells & headers */
+.data-table th.col-right,
+.data-table td.col-right,
+.table th.col-right,
+.table td.col-right,
+.data-table th.text-right,
+.data-table td.text-right,
+.table th.text-right,
+.table td.text-right { text-align: right; }
+
+.data-table th.col-left,
+.data-table td.col-left,
+.table th.col-left,
+.table td.col-left,
+.data-table th.text-left,
+.data-table td.text-left,
+.table th.text-left,
+.table td.text-left { text-align: left; }
+
+.data-table th.col-center,
+.data-table td.col-center,
+.table th.col-center,
+.table td.col-center,
+.data-table th.text-center,
+.data-table td.text-center,
+.table th.text-center,
+.table td.text-center { text-align: center; }
+
+/* SMILES monospace pill */
+.smiles-pill {
+  display: inline-block;
+  max-width: 240px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-light);
+  border-radius: 4px;
+  padding: 2px 8px;
+  vertical-align: middle;
 }
 
 /* Form Inputs */
@@ -223,9 +339,9 @@ code, .mono {
 /* Split Pane Layouts */
 .split-layout {
   display: flex;
-  height: calc(100vh - var(--navbar-height) - 4rem);
+  height: calc(100vh - 4rem);
   border: 1px solid var(--border-light);
-  border-radius: 6px;
+  border-radius: 8px;
   background: var(--bg-panel);
   overflow: hidden;
 }
@@ -245,6 +361,58 @@ code, .mono {
   flex-direction: column;
 }
 
+.report-shell {
+  width: 100%;
+}
+
+.report-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.report-toolbar-copy,
+.report-toolbar-nav {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.report-paper {
+  background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: 18px;
+  padding: 18px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.28);
+}
+
+.report-paper-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.report-kicker {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #cbd5e1;
+}
+
+.report-chip {
+  font-size: 11px;
+  color: #bfdbfe;
+  background: rgba(56, 189, 248, 0.1);
+  border: 1px solid rgba(56, 189, 248, 0.18);
+  border-radius: 999px;
+  padding: 4px 10px;
+}
+
 /* Report Markdown Screen View Styling (High-Contrast Academic Paper Style) */
 .report-markdown {
   background: #ffffff !important;
@@ -252,6 +420,8 @@ code, .mono {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
   line-height: 1.6 !important;
   font-size: 14px !important;
+  border-radius: 14px !important;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
 }
 
 .report-markdown h1,
@@ -266,14 +436,29 @@ code, .mono {
   padding-bottom: 6px !important;
 }
 
-.report-markdown h1 { font-size: 1.8rem !important; }
-.report-markdown h2 { font-size: 1.4rem !important; }
+.report-markdown h1 {
+  font-size: 2.1rem !important;
+  letter-spacing: -0.03em !important;
+  margin-top: 0 !important;
+  padding-bottom: 12px !important;
+}
+
+.report-markdown h2 {
+  font-size: 1.45rem !important;
+  margin-top: 2rem !important;
+}
+
 .report-markdown h3 { font-size: 1.2rem !important; }
 
 .report-markdown p,
 .report-markdown li {
   color: #2d3748 !important;
   margin-bottom: 0.75rem !important;
+}
+
+.report-markdown ul,
+.report-markdown ol {
+  padding-left: 1.25rem !important;
 }
 
 .report-markdown strong {
@@ -286,20 +471,23 @@ code, .mono {
   border-collapse: collapse !important;
   margin: 1.5rem 0 !important;
   font-size: 13px !important;
+  overflow: hidden !important;
+  border-radius: 12px !important;
 }
 
 .report-markdown th {
-  background: #f7fafc !important;
+  background: #f8fafc !important;
   color: #1a202c !important;
   font-weight: 600 !important;
   border: 1px solid #cbd5e0 !important;
-  padding: 8px 12px !important;
+  padding: 10px 12px !important;
 }
 
 .report-markdown td {
   border: 1px solid #e2e8f0 !important;
-  padding: 8px 12px !important;
+  padding: 10px 12px !important;
   color: #2d3748 !important;
+  vertical-align: top !important;
 }
 
 .report-markdown tbody tr:nth-child(even) {

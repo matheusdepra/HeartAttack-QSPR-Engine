@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import './index.css';
 
 // Layout & Common
-import Navbar from './components/layout/Navbar';
 import Sidebar from './components/layout/Sidebar';
 import LibraryView from './components/views/LibraryView';
 import WizardView from './components/views/WizardView';
@@ -13,7 +12,7 @@ import UserManagementView from './components/views/UserManagementView';
 import DocumentationView from './components/views/DocumentationView';
 import LoadingOverlay from './components/common/LoadingOverlay';
 
-import { API_BASE } from './config';
+import { API_BASE, USER_STORAGE_KEY } from './config';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -21,6 +20,7 @@ function App() {
   const [drugs, setDrugs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isStarting, setIsStarting] = useState(true);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   
   // Progress State
   const [syncStatus, setSyncStatus] = useState({ active: false, current: 0, total: 0, label: "" });
@@ -32,7 +32,7 @@ function App() {
   const [analysisItems, setAnalysisItems] = useState([]);
 
   useEffect(() => {
-    const savedUser = localStorage.getItem('cardio_user');
+    const savedUser = localStorage.getItem(USER_STORAGE_KEY);
     if (savedUser) {
       setUser(JSON.parse(savedUser));
     }
@@ -41,12 +41,12 @@ function App() {
 
   const handleLoginSuccess = (userData) => {
     setUser(userData);
-    localStorage.setItem('cardio_user', JSON.stringify(userData));
+    localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(userData));
   };
 
   const handleLogout = () => {
     setUser(null);
-    localStorage.removeItem('cardio_user');
+    localStorage.removeItem(USER_STORAGE_KEY);
     setView('library');
   };
 
@@ -246,9 +246,16 @@ function App() {
 
   return (
     <>
-      <Navbar syncStatus={syncStatus} user={user} onLogout={handleLogout} />
       <div className="app-container">
-        <Sidebar activeView={view} setView={handleSetView} user={user} />
+        <Sidebar 
+          activeView={view} 
+          setView={handleSetView} 
+          user={user} 
+          syncStatus={syncStatus} 
+          onLogout={handleLogout}
+          collapsed={isSidebarCollapsed}
+          onToggleCollapsed={() => setIsSidebarCollapsed((current) => !current)}
+        />
         
         {loading && <LoadingOverlay message={view === 'wizard' && wizardStep === 2 ? "Executing Regression Models..." : "Synchronizing Database..."} />}
         

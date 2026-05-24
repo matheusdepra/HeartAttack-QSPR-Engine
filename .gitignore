@@ -1,25 +1,40 @@
-# Python
+# -----------------------------------------------------------------------------
+# Python runtime and virtual environments
+# -----------------------------------------------------------------------------
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
-.venv
+.venv/
 venv/
 env/
 .env
 
-# Data & Results (Generated files)
+# -----------------------------------------------------------------------------
+# Local databases and generated scientific outputs
+# Keep source data and code in git; ignore generated run artifacts.
+# -----------------------------------------------------------------------------
 data/*.db
-data/plots/*.png
+data/plots/
 data/qspr_results/
 data/dumps/
 data/logs/
 
-# IDEs
+# -----------------------------------------------------------------------------
+# Legacy research artifacts and historical scratch work
+# These are not required for platform runtime or deployment.
+# -----------------------------------------------------------------------------
+legacy/
+scratch/
+
+# -----------------------------------------------------------------------------
+# Temporary tests / ad hoc local experiments
+# -----------------------------------------------------------------------------
+tests/test_*.py
+
+# -----------------------------------------------------------------------------
+# IDE and OS metadata
+# -----------------------------------------------------------------------------
 .vscode/
 .idea/
 .DS_Store
-
-# Scratch files
-scratch/
-tests/test_*.py

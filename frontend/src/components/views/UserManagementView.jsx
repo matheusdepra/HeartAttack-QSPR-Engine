@@ -125,85 +125,87 @@ export default function UserManagementView({ apiBase }) {
             Loading registered users...
           </div>
         ) : (
-          <div className="table-wrapper">
-            <table className="table">
-              <thead>
-                <tr>
-                  <th style={{ width: '60px' }}>ID</th>
-                  <th>Username</th>
-                  <th style={{ width: '120px' }}>Role</th>
-                  <th style={{ width: '120px' }}>Status</th>
-                  <th style={{ width: '220px', textAlign: 'right' }}>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {users.map((u) => (
-                  <tr key={u.id}>
-                    <td className="mono">{u.id}</td>
-                    <td>
-                      <span style={{ fontWeight: 600, color: '#fff' }}>{u.username}</span>
-                    </td>
-                    <td>
-                      <span style={{
-                        fontSize: '11px',
-                        fontWeight: 600,
-                        padding: '2px 8px',
-                        borderRadius: '4px',
-                        background: u.role === 'admin' ? 'rgba(236, 72, 153, 0.15)' : 'rgba(255, 255, 255, 0.05)',
-                        color: u.role === 'admin' ? '#f472b6' : 'var(--text-dim)',
-                        border: u.role === 'admin' ? '1px solid rgba(236, 72, 153, 0.25)' : '1px solid rgba(255, 255, 255, 0.08)'
-                      }}>
-                        {u.role.toUpperCase()}
-                      </span>
-                    </td>
-                    <td>
-                      <span style={{
-                        fontSize: '11px',
-                        fontWeight: 600,
-                        padding: '2px 8px',
-                        borderRadius: '4px',
-                        background: u.is_approved ? 'rgba(16, 185, 129, 0.15)' : 'rgba(245, 158, 11, 0.15)',
-                        color: u.is_approved ? '#34d399' : '#fbbf24',
-                        border: u.is_approved ? '1px solid rgba(16, 185, 129, 0.25)' : '1px solid rgba(245, 158, 11, 0.25)'
-                      }}>
-                        {u.is_approved ? 'APPROVED' : 'PENDING'}
-                      </span>
-                    </td>
-                    <td style={{ textAlign: 'right' }}>
-                      <div style={{ display: 'flex', gap: '6px', justifyContent: 'flex-end' }}>
-                        {!u.is_approved && (
-                          <button
-                            className="btn btn-primary"
-                            style={{ fontSize: '11px', padding: '2px 8px', background: '#059669', color: '#fff' }}
-                            onClick={() => handleApprove(u.id)}
-                          >
-                            Approve
-                          </button>
-                        )}
-                        {u.username !== 'admin' && (
-                          <>
-                            <button
-                              className="btn btn-outline"
-                              style={{ fontSize: '11px', padding: '2px 8px' }}
-                              onClick={() => handleToggleRole(u.id)}
-                            >
-                              Toggle Role
-                            </button>
-                            <button
-                              className="btn btn-outline"
-                              style={{ fontSize: '11px', padding: '2px 8px', color: '#fca5a5', borderColor: 'rgba(239, 68, 68, 0.2)' }}
-                              onClick={() => handleDelete(u.id, u.username)}
-                            >
-                              Delete
-                            </button>
-                          </>
-                        )}
-                      </div>
-                    </td>
+          <div className="panel table-panel">
+            <div className="table-scroll">
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th className="text-left" style={{ width: '60px' }}>ID</th>
+                    <th>Username</th>
+                    <th className="text-center" style={{ width: '120px' }}>Role</th>
+                    <th className="text-center" style={{ width: '120px' }}>Status</th>
+                    <th className="text-right" style={{ width: '220px' }}>Actions</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {users.map((u) => (
+                    <tr key={u.id}>
+                      <td className="mono">{u.id}</td>
+                      <td>
+                        <span style={{ fontWeight: 600, color: '#fff' }}>{u.username}</span>
+                      </td>
+                      <td className="text-center">
+                        <span style={{
+                          fontSize: '11px',
+                          fontWeight: 600,
+                          padding: '2px 8px',
+                          borderRadius: '4px',
+                          background: u.role === 'admin' ? 'rgba(236, 72, 153, 0.15)' : 'rgba(255, 255, 255, 0.05)',
+                          color: u.role === 'admin' ? '#f472b6' : 'var(--text-dim)',
+                          border: u.role === 'admin' ? '1px solid rgba(236, 72, 153, 0.25)' : '1px solid rgba(255, 255, 255, 0.08)'
+                        }}>
+                          {u.role.toUpperCase()}
+                        </span>
+                      </td>
+                      <td className="text-center">
+                        <span style={{
+                          fontSize: '11px',
+                          fontWeight: 600,
+                          padding: '2px 8px',
+                          borderRadius: '4px',
+                          background: u.is_approved ? 'rgba(16, 185, 129, 0.15)' : 'rgba(245, 158, 11, 0.15)',
+                          color: u.is_approved ? '#34d399' : '#fbbf24',
+                          border: u.is_approved ? '1px solid rgba(16, 185, 129, 0.25)' : '1px solid rgba(245, 158, 11, 0.25)'
+                        }}>
+                          {u.is_approved ? 'APPROVED' : 'PENDING'}
+                        </span>
+                      </td>
+                      <td className="text-right">
+                        <div style={{ display: 'flex', gap: '6px', justifyContent: 'flex-end' }}>
+                          {!u.is_approved && (
+                            <button
+                              className="btn btn-primary"
+                              style={{ fontSize: '11px', padding: '2px 8px', background: '#059669', color: '#fff' }}
+                              onClick={() => handleApprove(u.id)}
+                            >
+                              Approve
+                            </button>
+                          )}
+                          {u.username !== 'admin' && (
+                            <>
+                              <button
+                                className="btn btn-outline"
+                                style={{ fontSize: '11px', padding: '2px 8px' }}
+                                onClick={() => handleToggleRole(u.id)}
+                              >
+                                Toggle Role
+                              </button>
+                              <button
+                                className="btn btn-outline"
+                                style={{ fontSize: '11px', padding: '2px 8px', color: '#fca5a5', borderColor: 'rgba(239, 68, 68, 0.2)' }}
+                                onClick={() => handleDelete(u.id, u.username)}
+                              >
+                                Delete
+                              </button>
+                            </>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
       </div>

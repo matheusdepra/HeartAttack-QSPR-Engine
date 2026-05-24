@@ -4,8 +4,15 @@ import sys
 import time
 from pathlib import Path
 
+ROOT_DIR = Path(__file__).parent.absolute()
+SRC_DIR = ROOT_DIR / "src"
+if str(SRC_DIR) not in sys.path:
+    sys.path.insert(0, str(SRC_DIR))
+
+from app.core.config import settings
+
 def run_platform():
-    root_dir = Path(__file__).parent.absolute()
+    root_dir = ROOT_DIR
     
     # 1. Start Backend (FastAPI)
     print("🚀 Starting CardioQSPR Backend (FastAPI)...")
@@ -17,8 +24,8 @@ def run_platform():
             sys.executable, "-m", "uvicorn", "api:app", 
             "--reload", 
             "--reload-dir", ".",  # Watch only the src directory
-            "--host", "0.0.0.0", 
-            "--port", "5555"
+            "--host", settings.BACKEND_HOST,
+            "--port", str(settings.BACKEND_PORT)
         ],
         cwd=root_dir / "src",
         env=backend_env
@@ -45,8 +52,8 @@ def run_platform():
     )
     
     print("\n✅ CardioQSPR Platform is running!")
-    print("🔗 Backend API: http://localhost:5555/docs")
-    print("🔗 Frontend UI: http://localhost:5173")
+    print(f"🔗 Backend API: http://localhost:{settings.BACKEND_PORT}/docs")
+    print(f"🔗 Frontend UI: http://localhost:{settings.FRONTEND_PORT}")
     print("\nPress Ctrl+C to stop both servers.")
     
     try:

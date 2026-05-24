@@ -1,22 +1,39 @@
-// Dynamic host resolution for seamless local development and multi-user OCI deployments
+const env = import.meta.env;
+
+const API_PORT = env.VITE_API_PORT || '5555';
+const API_PREFIX = env.VITE_API_PREFIX || '/api';
+const STATIC_PREFIX = env.VITE_STATIC_PREFIX || '/plots';
+const LOCAL_API_HOST = env.VITE_LOCAL_API_HOST || 'http://localhost';
+const STORAGE_USER_KEY = env.VITE_STORAGE_USER_KEY || 'cardio_user';
+const APP_NAME = env.VITE_APP_NAME || 'CardioQSPR';
+const APP_SHORT_NAME = env.VITE_APP_SHORT_NAME || 'CQ';
+const APP_VERSION = env.VITE_APP_VERSION || 'v1.0';
+
 const getApiHost = () => {
-  const { hostname, protocol } = window.location;
-  
-  // If local development, talk to localhost:5555
-  if (hostname === 'localhost' || hostname === '127.0.0.1') {
-    return 'http://localhost:5555';
+  const explicitHost = env.VITE_API_HOST;
+  if (explicitHost) {
+    return explicitHost.replace(/\/$/, '');
   }
-  
-  // If running directly on OCI using ports (Vite on 5173, backend on 5555)
-  const hasPort = window.location.port && window.location.port !== '80' && window.location.port !== '443';
+
+  const { hostname, protocol, port } = window.location;
+  const isLocal = hostname === 'localhost' || hostname === '127.0.0.1';
+
+  if (isLocal) {
+    return `${LOCAL_API_HOST.replace(/\/$/, '')}:${API_PORT}`;
+  }
+
+  const hasPort = port && port !== '80' && port !== '443';
   if (hasPort) {
-    return `${protocol}//${hostname}:5555`;
+    return `${protocol}//${hostname}:${API_PORT}`;
   }
-  
-  // If Nginx reverse proxy is set up to route requests via port 80/443 without specifying port
+
   return `${protocol}//${hostname}`;
 };
 
 export const API_HOST = getApiHost();
-export const API_BASE = `${API_HOST}/api`;
-export const API_STATIC = `${API_HOST}/plots`;
+export const API_BASE = `${API_HOST}${API_PREFIX}`;
+export const API_STATIC = `${API_HOST}${STATIC_PREFIX}`;
+export const USER_STORAGE_KEY = STORAGE_USER_KEY;
+export const FRONTEND_APP_NAME = APP_NAME;
+export const FRONTEND_APP_SHORT_NAME = APP_SHORT_NAME;
+export const FRONTEND_APP_VERSION = APP_VERSION;

@@ -194,41 +194,43 @@ export default function DocumentationView() {
           To guarantee absolute chemometric robustness and prevent data leakage or missing values (Nulls) during regression analyses, CardioQSPR implements a structured pipeline of theoretical calculations and fallbacks if a physical property is not explicitly cataloged in the PubChem database:
         </p>
 
-        <div className="table-wrapper">
-          <table className="table" style={{ fontSize: '12px' }}>
-            <thead>
-              <tr>
-                <th style={{ width: '80px' }}>Symbol</th>
-                <th style={{ width: '220px' }}>Property</th>
-                <th>Scientific Definition</th>
-                <th style={{ width: '380px' }}>Fallback Strategy / RDKit Estimator</th>
-              </tr>
-            </thead>
-            <tbody>
-              {properties.map((p) => (
-                <tr key={p.prop}>
-                  <td className="mono" style={{ color: '#ec4899', fontWeight: 700 }}>{p.prop}</td>
-                  <td style={{ fontWeight: 600, color: '#fff' }}>{p.name}</td>
-                  <td style={{ color: 'var(--text-dim)', lineHeight: '1.4' }}>{p.desc}</td>
-                  <td>
-                    <span style={{
-                      fontSize: '11px',
-                      fontFamily: 'monospace',
-                      color: '#a7f3d0',
-                      background: 'rgba(16, 185, 129, 0.08)',
-                      border: '1px solid rgba(16, 185, 129, 0.15)',
-                      padding: '2px 6px',
-                      borderRadius: '4px',
-                      display: 'inline-block',
-                      lineHeight: '1.3'
-                    }}>
-                      {p.fallback}
-                    </span>
-                  </td>
+        <div className="panel table-panel">
+          <div className="table-scroll">
+            <table className="table" style={{ fontSize: '12px' }}>
+              <thead>
+                <tr>
+                  <th style={{ width: '80px' }}>Symbol</th>
+                  <th style={{ width: '220px' }}>Property</th>
+                  <th>Scientific Definition</th>
+                  <th style={{ width: '380px' }}>Fallback Strategy / RDKit Estimator</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {properties.map((p) => (
+                  <tr key={p.prop}>
+                    <td className="mono" style={{ color: '#ec4899', fontWeight: 700 }}>{p.prop}</td>
+                    <td style={{ fontWeight: 600, color: '#fff' }}>{p.name}</td>
+                    <td style={{ color: 'var(--text-dim)', lineHeight: '1.4' }}>{p.desc}</td>
+                    <td>
+                      <span style={{
+                        fontSize: '11px',
+                        fontFamily: 'monospace',
+                        color: '#a7f3d0',
+                        background: 'rgba(16, 185, 129, 0.08)',
+                        border: '1px solid rgba(16, 185, 129, 0.15)',
+                        padding: '2px 6px',
+                        borderRadius: '4px',
+                        display: 'inline-block',
+                        lineHeight: '1.3'
+                      }}>
+                        {p.fallback}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 
