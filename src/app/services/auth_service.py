@@ -16,15 +16,15 @@ class AuthService:
         pw_hash = self.hash_password(schema.password)
         user = self.user_repo.get_by_username(schema.username)
         if not user or user.password_hash != pw_hash:
-            raise InvalidCredentialsError("Credenciais inválidas")
+            raise InvalidCredentialsError("Invalid credentials")
         if not user.is_approved:
-            raise AppError("Sua conta está pendente de aprovação por um administrador.", 403)
+            raise AppError("Your account is pending administrator approval.", 403)
         return user
 
     def register(self, schema: UserRegister) -> User:
         existing = self.user_repo.get_by_username(schema.username)
         if existing:
-            raise AppError("Este nome de usuário já está em uso.", 400)
+            raise AppError("This username is already in use.", 400)
             
         pw_hash = self.hash_password(schema.password)
         user = User(
@@ -38,7 +38,7 @@ class AuthService:
     def create_user(self, schema: UserCreate) -> User:
         existing = self.user_repo.get_by_username(schema.username)
         if existing:
-            raise AppError("Este nome de usuário já está em uso.", 400)
+            raise AppError("This username is already in use.", 400)
             
         pw_hash = self.hash_password(schema.password)
         user = User(

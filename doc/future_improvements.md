@@ -14,12 +14,12 @@ This document outlines potential technical and methodological improvements for t
 
 ### Outlier Detection (Cook's Distance)
 - **Problem**: Single drugs with problematic experimental data (like Aspirin's FP) can destroy otherwise strong correlations.
-- **Improvement**: Integrate Cook's Distance or RANSAC (Random Sample Consensus) in the `src/calculators/qspr.py` module to automatically detect and flag influential outliers for manual review.
+- **Improvement**: Integrate Cook's Distance or RANSAC (Random Sample Consensus) in the `src/app/calculators/qspr.py` module to automatically detect and flag influential outliers for manual review.
 
 ## 3. Methodological Alignment
 ### Handling "0.0" vs "Tiny" Values
 - **Problem**: Literature often treats very low Vapor Pressures as literal 0.0, while our pipeline uses precise scientific notation. This "precision mismatch" affects the $r$ calculation.
-- **Improvement**: Add an optional "Literature Emulation Mode" that applies a floor (e.g., values $< 1.0e-10$ are treated as $0.0$) to compare results more fairly with legacy publications.
+- **Improvement**: Add an optional "Literature Emulation Mode" that applies a floor (e.g., values $< 1.0e-10$ are treated as $0.0$) to compare results more fairly with the reference publication.
 
 ## 4. Feature Engineering
 ### Hydrogen-Bonding Descriptors

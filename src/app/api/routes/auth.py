@@ -13,4 +13,4 @@ def login(data: UserLogin, auth_service: AuthService = Depends(get_auth_service)
 @router.post("/register")
 def register(data: UserRegister, auth_service: AuthService = Depends(get_auth_service)):
     user = auth_service.register(data)
-    return {"status": "pending_approval", "message": "Solicitação enviada. Aguarde aprovação do administrador."}
+    return {"status": "pending_approval", "message": "Registration submitted. Wait for administrator approval."}

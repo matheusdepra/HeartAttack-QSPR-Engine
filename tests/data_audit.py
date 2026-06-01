@@ -4,9 +4,10 @@ import pandas as pd
 from pathlib import Path
 
 # Add src to path
-sys.path.append(str(Path(__file__).parent.parent / "src"))
+sys.path.append(str(Path(__file__).resolve().parents[1] / "src"))
 
-from db.models import get_engine, get_session, Drug
+from app.core.database import Base, engine, SessionLocal
+from app.models import Drug
 
 # Reference values from Rasheed et al. (2023) Table 2 (Approximate based on earlier benchmarking)
 GOLDEN_SET = {
@@ -21,14 +22,14 @@ GOLDEN_SET = {
 
 def audit_library():
     print("🔬 CardioQSPR Data Integrity Audit\n" + "="*40)
-    
-    engine = get_engine()
-    session = get_session(engine)
+
+    Base.metadata.create_all(bind=engine)
+    session = SessionLocal()
     
     try:
         db_drugs = session.query(Drug).all()
         if not db_drugs:
-            print("❌ Library is empty. Please run 'Load Defaults' in the UI first.")
+            print("❌ Library is empty. Start the backend once to run the automatic seed.")
             return
 
         results = []

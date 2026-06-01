@@ -4,12 +4,16 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from app.core.config import settings
-from app.core.database import engine, Base
+from app.core.database import engine, Base, SessionLocal
 from app.core.exceptions import register_exception_handlers
 from app.api.router import router as api_router
+from app.db.bootstrap import seed_database
 
 # Ensure all tables are created on startup
 Base.metadata.create_all(bind=engine)
+if settings.AUTO_SEED_DATABASE:
+    with SessionLocal() as db:
+        seed_database(db)
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
