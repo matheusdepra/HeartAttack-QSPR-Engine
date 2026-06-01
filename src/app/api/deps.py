@@ -1,6 +1,10 @@
 # FastAPI dependencies injecting DB sessions, repositories, and services
-from fastapi import Depends
+import secrets
+from typing import Optional
+
+from fastapi import Depends, Header, HTTPException, status
 from sqlalchemy.orm import Session
+from app.core.config import settings
 from app.core.database import get_db
 from app.repositories.user import UserRepository
 from app.repositories.drug import DrugRepository
@@ -31,3 +35,14 @@ def get_analysis_service(
     drug_repo: DrugRepository = Depends(get_drug_repo)
 ) -> AnalysisService:
     return AnalysisService(analysis_repo, drug_repo)
+
+
+def require_admin_api_key(x_admin_api_key: Optional[str] = Header(default=None)) -> None:
+    """Protect admin-only endpoints when ADMIN_API_KEY is configured."""
+    if not settings.ADMIN_API_KEY:
+        return
+    if not x_admin_api_key or not secrets.compare_digest(x_admin_api_key, settings.ADMIN_API_KEY):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid or missing admin API key",
+        )

@@ -4,9 +4,9 @@ from typing import List
 from app.schemas.user import UserResponse, UserCreate
 from app.repositories.user import UserRepository
 from app.services.auth_service import AuthService
-from app.api.deps import get_user_repo, get_auth_service
+from app.api.deps import get_user_repo, get_auth_service, require_admin_api_key
 
-router = APIRouter(prefix="/users", tags=["users"])
+router = APIRouter(prefix="/users", tags=["users"], dependencies=[Depends(require_admin_api_key)])
 
 @router.get("", response_model=List[UserResponse])
 def list_users(user_repo: UserRepository = Depends(get_user_repo)):

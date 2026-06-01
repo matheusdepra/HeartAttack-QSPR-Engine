@@ -12,6 +12,10 @@ def _env_list(name: str, default: str) -> List[str]:
     return [item.strip() for item in raw.split(",") if item.strip()]
 
 
+def _env_bool(name: str, default: str) -> bool:
+    return os.getenv(name, default).strip().lower() in {"1", "true", "yes", "on"}
+
+
 class Settings:
     PROJECT_NAME: str = os.getenv("PROJECT_NAME", "CardioQSPR")
     PROJECT_DESCRIPTION: str = os.getenv(
@@ -31,6 +35,13 @@ class Settings:
     DATABASE_PATH: str = os.getenv("DATABASE_PATH", str(ROOT_DIR / "data" / "drugs.db"))
     PLOTS_DIR: Path = Path(os.getenv("PLOTS_DIR", str(ROOT_DIR / "data" / "plots")))
     QSPR_RESULTS_DIR: Path = Path(os.getenv("QSPR_RESULTS_DIR", str(ROOT_DIR / "data" / "qspr_results")))
+
+    AUTO_SEED_DATABASE: bool = _env_bool("AUTO_SEED_DATABASE", "true")
+    SEED_BASELINE_DRUGS: bool = _env_bool("SEED_BASELINE_DRUGS", "true")
+    SEED_DEFAULT_ADMIN: bool = _env_bool("SEED_DEFAULT_ADMIN", "true")
+    DEFAULT_ADMIN_USERNAME: str = os.getenv("DEFAULT_ADMIN_USERNAME", "admin")
+    DEFAULT_ADMIN_PASSWORD: str = os.getenv("DEFAULT_ADMIN_PASSWORD", "admin123")
+    ADMIN_API_KEY: str = os.getenv("ADMIN_API_KEY", "")
 
     PUBCHEM_REST_URL: str = os.getenv("PUBCHEM_REST_URL", "https://pubchem.ncbi.nlm.nih.gov/rest/pug")
     PUBCHEM_VIEW_URL: str = os.getenv("PUBCHEM_VIEW_URL", "https://pubchem.ncbi.nlm.nih.gov/rest/pug_view")

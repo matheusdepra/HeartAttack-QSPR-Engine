@@ -15,6 +15,12 @@ The platform is designed for workflows where a researcher wants to:
 
 ## Quick Start
 
+Prerequisites:
+
+- Python 3.11 or newer
+- Node.js 20 or newer with npm
+- A working C/C++ scientific Python wheel environment for RDKit
+
 ```bash
 python3 -m venv venv
 source venv/bin/activate
@@ -27,10 +33,19 @@ cd ..
 python run.py
 ```
 
+On first backend startup, CardioQSPR creates `data/drugs.db`, seeds the baseline cardiovascular drug dataset, and creates a local admin user.
+
 Then open:
 
 - Frontend UI: `http://localhost:5173`
 - Backend API docs: `http://localhost:5555/docs`
+
+Default local login:
+
+- username: `admin`
+- password: `admin123`
+
+These credentials are for local academic use only. Change them through `DEFAULT_ADMIN_USERNAME` and `DEFAULT_ADMIN_PASSWORD`, or disable default admin seeding with `SEED_DEFAULT_ADMIN=false`.
 
 ## Contents
 
@@ -46,6 +61,7 @@ Then open:
 - [Environment Variables](#environment-variables)
 - [Installation](#installation)
 - [Local Development And Deployment](#local-development-and-deployment)
+- [Verification](#verification)
 - [Linux Service Deployment](#linux-service-deployment)
 - [Data Persistence Model](#data-persistence-model)
 - [Outputs Generated](#outputs-generated)
@@ -397,6 +413,12 @@ No environment variable is strictly required to boot the platform locally. Every
 | `DATABASE_PATH` | `data/drugs.db` | SQLite database file path |
 | `PLOTS_DIR` | `data/plots` | Directory for generated plot assets |
 | `QSPR_RESULTS_DIR` | `data/qspr_results` | Directory for generated reports and CSV outputs |
+| `AUTO_SEED_DATABASE` | `true` | Seed local bootstrap data after tables are created |
+| `SEED_BASELINE_DRUGS` | `true` | Insert the baseline research drug library when the `drugs` table is empty |
+| `SEED_DEFAULT_ADMIN` | `true` | Create a default local admin account when missing |
+| `DEFAULT_ADMIN_USERNAME` | `admin` | Username for the seeded local admin account |
+| `DEFAULT_ADMIN_PASSWORD` | `admin123` | Password for the seeded local admin account |
+| `ADMIN_API_KEY` | unset | Optional API key for `/api/users/*`; when set, requests must include `X-Admin-API-Key` |
 | `PUBCHEM_REST_URL` | `https://pubchem.ncbi.nlm.nih.gov/rest/pug` | PubChem PUG REST base URL |
 | `PUBCHEM_VIEW_URL` | `https://pubchem.ncbi.nlm.nih.gov/rest/pug_view` | PubChem PUG View base URL |
 | `EPI_SUITE_API_URL` | `https://episuite.dev/api/submit` | Remote EPI Suite-style fallback endpoint |
@@ -426,6 +448,8 @@ No environment variable is strictly required to boot the platform locally. Every
 export BACKEND_PORT=5555
 export DATABASE_PATH=/absolute/path/to/drugs.db
 export CORS_ALLOW_ORIGINS=http://localhost:5173,https://your-domain.example
+export DEFAULT_ADMIN_PASSWORD=change-me
+export ADMIN_API_KEY=change-me-too
 export VITE_API_PORT=5555
 export VITE_APP_NAME=CardioQSPR
 ```
@@ -433,6 +457,7 @@ export VITE_APP_NAME=CardioQSPR
 ### Runtime Notes
 
 - `PYTHONPATH` may still need to include `src/` when launching the backend manually from the repository root
+- `ADMIN_API_KEY` is optional for local single-user demos, but should be set before exposing the backend on a shared network
 - internet access is required for PubChem and EPI Suite fallbacks
 - if you change route-related defaults such as `API_PREFIX` or `STATIC_PLOTS_ROUTE`, the frontend must be configured with matching `VITE_*` values
 
@@ -526,6 +551,27 @@ The compiled assets are generated under:
 frontend/dist/
 ```
 
+## Verification
+
+Run these commands after installing dependencies to confirm the clone is operational:
+
+```bash
+source venv/bin/activate
+python -m pytest -q
+
+cd frontend
+npm run build
+```
+
+The backend tests use a temporary SQLite database, so they do not mutate `data/drugs.db`.
+
+For a quick manual API check after `python run.py`:
+
+```bash
+curl http://localhost:5555/api/health
+curl http://localhost:5555/api/drugs
+```
+
 ## Linux Service Deployment
 
 The repository includes `setup_service.sh` for Linux environments that use `systemd`.
@@ -564,6 +610,8 @@ This logic lives in `frontend/src/config.js`.
 ## Data Persistence Model
 
 CardioQSPR uses two kinds of persistence.
+
+On a fresh clone, the application creates the SQLite database at `data/drugs.db` and seeds the baseline compounds from `src/app/db/seeds.py`. Generated plots and reports are runtime artifacts and should be reproducible from the source data and analysis workflow.
 
 ### 1. Master Drug Records
 
@@ -621,6 +669,8 @@ For high-stakes or publication-grade work, manually review:
 - static plots served from `/plots`
 - API mounted under `/api`
 - database default path: `data/drugs.db`
+- default local admin: `admin` / `admin123`
+- optional admin API guard: `ADMIN_API_KEY`
 
 ## License
 

@@ -1,16 +1,48 @@
-# React + Vite
+# CardioQSPR Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React + Vite interface for the CardioQSPR academic QSPR platform.
 
-Currently, two official plugins are available:
+## Requirements
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Node.js 20 or newer
+- Backend running on `http://localhost:5555`
 
-## React Compiler
+## Install
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+```bash
+npm install
+```
 
-## Expanding the ESLint configuration
+## Development
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```bash
+npm run dev
+```
+
+Open `http://localhost:5173`.
+
+## Build Check
+
+```bash
+npm run build
+```
+
+The production bundle is written to `dist/`.
+
+## Configuration
+
+The UI reads Vite environment variables:
+
+| Variable | Default | Purpose |
+|---|---|---|
+| `VITE_API_HOST` | unset | Explicit backend host override |
+| `VITE_API_PORT` | `5555` | Backend API port |
+| `VITE_API_PREFIX` | `/api` | Backend API prefix |
+| `VITE_STATIC_PREFIX` | `/plots` | Backend static plot prefix |
+| `VITE_LOCAL_API_HOST` | `http://localhost` | Local API host |
+| `VITE_STORAGE_USER_KEY` | `cardio_user` | Login storage key |
+| `VITE_APP_NAME` | `CardioQSPR` | Display name |
+| `VITE_APP_SHORT_NAME` | `CQ` | Compact display name |
+| `VITE_APP_VERSION` | `v1.0` | Version label |
+
+For the standard local setup, no frontend `.env` file is required.
