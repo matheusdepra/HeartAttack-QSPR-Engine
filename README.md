@@ -15,13 +15,60 @@ The platform is designed for workflows where a researcher wants to:
 
 ## Quick Start
 
-Prerequisites:
+CardioQSPR needs three tools before the project can run:
 
 - Python 3.11 or newer
-- Node.js 20 or newer with npm
-- A working C/C++ scientific Python wheel environment for RDKit
+- Node.js 20 or newer, including npm
+- Git, if you want to clone the repository from the command line
+
+If you already have these tools installed, use the command block for your operating system below.
+
+First clone the repository or download it as a ZIP file. If using Git:
 
 ```bash
+git clone <repository-url>
+cd HeartAttack-QSPR-Engine
+```
+
+### Windows
+
+Use PowerShell from the project folder.
+
+```powershell
+py -3 --version
+node --version
+npm --version
+git --version  # optional if you downloaded the ZIP file
+
+py -3 -m venv venv
+.\venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+
+cd frontend
+npm install
+cd ..
+
+python run.py
+```
+
+If PowerShell blocks virtual environment activation, run:
+
+```powershell
+Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
+```
+
+Then close and reopen PowerShell and try `.\venv\Scripts\Activate.ps1` again.
+
+### Linux / macOS
+
+Use a terminal from the project folder.
+
+```bash
+python3 --version
+node --version
+npm --version
+git --version  # optional if you downloaded the ZIP file
+
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
@@ -58,10 +105,11 @@ These credentials are for local academic use only. Change them through `DEFAULT_
 - [User Workflows](#user-workflows)
 - [Tech Stack](#tech-stack)
 - [Project Structure](#project-structure)
+- [First-Time Setup](#first-time-setup)
 - [Environment Variables](#environment-variables)
-- [Installation](#installation)
 - [Local Development And Deployment](#local-development-and-deployment)
 - [Verification](#verification)
+- [Troubleshooting](#troubleshooting)
 - [Reproducibility](#reproducibility)
 - [Linux Service Deployment](#linux-service-deployment)
 - [Data Persistence Model](#data-persistence-model)
@@ -466,34 +514,88 @@ export VITE_APP_NAME=CardioQSPR
 - internet access is required for PubChem and EPI Suite fallbacks
 - if you change route-related defaults such as `API_PREFIX` or `STATIC_PLOTS_ROUTE`, the frontend must be configured with matching `VITE_*` values
 
-## Installation
+## First-Time Setup
 
-If you only want the fastest working local setup, use the Quick Start block at the top of this README. The full installation steps below are for clarity and manual control.
+This section is for users who do not already have Python, Node.js, npm, or Git installed.
 
-### 1. Create A Python Virtual Environment
+### Windows Tool Installation
 
-```bash
-python3 -m venv venv
-source venv/bin/activate
+1. Install Python from the official Python website: `https://www.python.org/downloads/`.
+   During installation, enable the option that adds Python to `PATH`.
+
+2. Install Node.js from the official Node.js website: `https://nodejs.org/`.
+   Choose the LTS version. npm is installed together with Node.js.
+
+3. Install Git from the official Git for Windows website: `https://git-scm.com/download/win`.
+   The default installer options are sufficient for this project.
+
+4. Open PowerShell and verify the tools:
+
+```powershell
+py -3 --version
+node --version
+npm --version
+git --version
 ```
 
-### 2. Install Python Dependencies
+5. Clone or download this repository, enter the project folder, and run the Windows commands from [Quick Start](#quick-start).
+
+### Linux Tool Installation
+
+Install Python, pip, venv support, Node.js, npm, and Git with your distribution package manager.
+
+For Ubuntu or Debian-based systems:
 
 ```bash
-pip install -r requirements.txt
+sudo apt update
+sudo apt install python3 python3-venv python3-pip nodejs npm git
 ```
 
-### 3. Install Frontend Dependencies
+Then verify:
 
 ```bash
-cd frontend
-npm install
-cd ..
+python3 --version
+node --version
+npm --version
+git --version
 ```
 
-### 4. Optional: Install Playwright Browser Runtime
+If your distribution installs an old Node.js version, install a current LTS version from the official Node.js website or your preferred Node version manager.
 
-This is only needed if you plan to use browser-based scraping utilities or related experimentation.
+After that, clone or download this repository, enter the project folder, and run the Linux/macOS commands from [Quick Start](#quick-start).
+
+### macOS Tool Installation
+
+Install these tools using either official installers or Homebrew.
+
+Official installer route:
+
+1. Install Python from the official Python website: `https://www.python.org/downloads/`.
+2. Install Node.js LTS from the official Node.js website: `https://nodejs.org/`.
+3. Install Git. macOS may prompt you to install Command Line Tools the first time you run `git`.
+
+Homebrew route:
+
+```bash
+brew install python node git
+```
+
+Then verify:
+
+```bash
+python3 --version
+node --version
+npm --version
+git --version
+```
+
+After that, clone or download this repository, enter the project folder, and run the Linux/macOS commands from [Quick Start](#quick-start).
+
+### Optional Browser Runtime
+
+Playwright is listed in the Python requirements for browser-based scraping experiments. The main platform does not need a browser runtime for normal local use.
+
+Install Chromium for Playwright only if you plan to run browser automation experiments:
 
 ```bash
 playwright install chromium
@@ -503,7 +605,17 @@ playwright install chromium
 
 ### Option A: Start The Full Platform With One Command
 
+Windows:
+
+```powershell
+.\venv\Scripts\Activate.ps1
+python run.py
+```
+
+Linux / macOS:
+
 ```bash
+source venv/bin/activate
 python run.py
 ```
 
@@ -522,16 +634,36 @@ http://localhost:5555/docs
 
 #### Backend
 
-From the repository root:
+From the repository root on Windows:
+
+```powershell
+.\venv\Scripts\Activate.ps1
+$env:PYTHONPATH = "$PWD\src"
+uvicorn api:app --reload --host 0.0.0.0 --port 5555
+```
+
+From the repository root on Linux / macOS:
 
 ```bash
+source venv/bin/activate
 export PYTHONPATH=$(pwd)/src
 uvicorn api:app --reload --host 0.0.0.0 --port 5555
 ```
 
 Alternative canonical entrypoint:
 
+Windows:
+
+```powershell
+.\venv\Scripts\Activate.ps1
+$env:PYTHONPATH = "$PWD\src"
+uvicorn app.main:app --reload --host 0.0.0.0 --port 5555
+```
+
+Linux / macOS:
+
 ```bash
+source venv/bin/activate
 export PYTHONPATH=$(pwd)/src
 uvicorn app.main:app --reload --host 0.0.0.0 --port 5555
 ```
@@ -560,12 +692,26 @@ frontend/dist/
 
 Run these commands after installing dependencies to confirm the clone is operational:
 
+Windows:
+
+```powershell
+.\venv\Scripts\Activate.ps1
+python -m pytest -q
+
+cd frontend
+npm run build
+cd ..
+```
+
+Linux / macOS:
+
 ```bash
 source venv/bin/activate
 python -m pytest -q
 
 cd frontend
 npm run build
+cd ..
 ```
 
 The backend tests use a temporary SQLite database, so they do not mutate `data/drugs.db`.
@@ -576,6 +722,61 @@ For a quick manual API check after `python run.py`:
 curl http://localhost:5555/api/health
 curl http://localhost:5555/api/drugs
 ```
+
+## Troubleshooting
+
+### `python` or `py` is not recognized
+
+Python is not installed or is not available in your terminal `PATH`.
+
+- On Windows, reinstall Python and enable the option to add Python to `PATH`.
+- On Linux/macOS, try `python3 --version` instead of `python --version`.
+
+### `npm` or `node` is not recognized
+
+Node.js is not installed or the terminal was opened before installation completed. Install Node.js LTS, close the terminal, open a new one, and check:
+
+```bash
+node --version
+npm --version
+```
+
+### PowerShell cannot activate the virtual environment
+
+Run this once:
+
+```powershell
+Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
+```
+
+Then close and reopen PowerShell.
+
+### The frontend or backend port is already in use
+
+CardioQSPR uses:
+
+- backend: `5555`
+- frontend: `5173`
+
+Stop the previous process with `Ctrl+C`, or change `BACKEND_PORT` / `VITE_PORT` if you intentionally need different ports.
+
+### The database looks empty
+
+Delete the local generated database and restart the platform:
+
+```bash
+rm -f data/drugs.db
+python run.py
+```
+
+On Windows PowerShell:
+
+```powershell
+Remove-Item data\drugs.db -ErrorAction SilentlyContinue
+python run.py
+```
+
+The database is seeded automatically on the next backend startup.
 
 ## Reproducibility
 
