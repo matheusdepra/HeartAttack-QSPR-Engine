@@ -1,7 +1,6 @@
 """
 QSPR Analysis Module
 ====================
-Ported and adapted from legacy/qspr_pipeline.py.
 
 Workflow:
   1. Export drug data from SQLite to a DataFrame (properties + topological indices)

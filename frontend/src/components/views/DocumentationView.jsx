@@ -250,7 +250,7 @@ export default function DocumentationView() {
       }}>
         <strong>Scientific Reference Article:</strong>
         <span>
-          Zaman, S., Yaqoob, H. S. A., Ullah, A., & Sheikh, M. (2023). <em>QSPR Analysis of Some Novel Drugs Used in Blood Cancer Treatment Via Degree Based Topological Indices and Regression Models</em>. Polycyclic Aromatic Compounds. DOI: 10.1080/10406638.2023.XXXXXXX.
+          Rasheed, M. W., Mahboob, A., & Hanif, I. (2023). <em>An estimation of physicochemical properties of heart attack treatment medicines by using molecular descriptor&apos;s</em>. South African Journal of Chemical Engineering, 45, 20-29. DOI: 10.1016/j.sajce.2023.04.003.
         </span>
       </div>
 

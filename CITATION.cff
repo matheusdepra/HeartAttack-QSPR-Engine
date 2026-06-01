@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use CardioQSPR in academic work, please cite this repository."
+title: "CardioQSPR: QSPR Regression Engine for Cardiovascular Drugs"
+version: "2.0.0"
+authors:
+  - family-names: "Andrade"
+    given-names: "Matheus de Prá"
+  - family-names: "Ornaghi Jr."
+    given-names: "Heitor"
+  - family-names: "Zattera"
+    given-names: "Ademir José"
+keywords:
+  - QSPR
+  - cardiovascular drugs
+  - topological indices
+  - cheminformatics
+  - RDKit
+license: MIT

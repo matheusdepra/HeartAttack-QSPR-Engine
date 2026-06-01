@@ -17,7 +17,7 @@ import seaborn as sns
 from rdkit import Chem
 from rdkit.Chem import Draw
 
-from calculators.topological import INDEX_NAMES
+from app.calculators.topological import INDEX_NAMES
 
 def generate_structure_grid(df: pd.DataFrame, output_path: str | Path, mols_per_row: int = 4):
     """

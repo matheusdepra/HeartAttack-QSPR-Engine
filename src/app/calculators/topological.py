@@ -1,9 +1,8 @@
 """
 Topological Index Calculator
 ============================
-Ported from legacy/qspr_pipeline.py.
-Calculates 10 degree-based topological indices from a SMILES string:
-  RI, RR, H, SCI, M1, M2, HM, RM2, F, HF
+Calculates degree-based topological indices from a SMILES string:
+  ABC, GA, RI, RR, H, SCI, M1, M2, HM, RM2, F, HF
 
 These are the same indices used in the QSPR analysis of the reference article
 (Rasheed et al.) for heart attack drug physicochemical property prediction.

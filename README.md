@@ -62,9 +62,13 @@ These credentials are for local academic use only. Change them through `DEFAULT_
 - [Installation](#installation)
 - [Local Development And Deployment](#local-development-and-deployment)
 - [Verification](#verification)
+- [Reproducibility](#reproducibility)
 - [Linux Service Deployment](#linux-service-deployment)
 - [Data Persistence Model](#data-persistence-model)
 - [Outputs Generated](#outputs-generated)
+- [Scientific References](#scientific-references)
+- [Citation](#citation)
+- [License](#license)
 - [Web Scraping Caveats](#web-scraping-caveats)
 
 ## What The Tool Does
@@ -381,13 +385,14 @@ This does not create a full analysis by itself. It is a descriptor calculator.
 │   │   ├── scrapers/         # PubChem and fallback acquisition
 │   │   ├── services/         # Business logic
 │   │   └── visualizers/      # Plot generation
-│   ├── main.py               # Legacy acquisition pipeline
+│   ├── main.py               # Optional ingestion CLI
+│   ├── resync_all.py         # Optional PubChem refresh CLI
 │   └── generate_qspr_report.py
 ├── data/
-│   ├── raw/
-│   ├── plots/
-│   ├── qspr_results/
-│   └── drugs.db
+│   ├── raw/                  # Source/reference data
+│   ├── plots/                # Generated at runtime, ignored by Git
+│   ├── qspr_results/         # Generated at runtime, ignored by Git
+│   └── drugs.db              # Generated at runtime, ignored by Git
 ├── run.py                    # Convenience launcher for backend + frontend
 ├── setup_service.sh          # Linux service setup helper
 └── requirements.txt
@@ -572,6 +577,21 @@ curl http://localhost:5555/api/health
 curl http://localhost:5555/api/drugs
 ```
 
+## Reproducibility
+
+For a clean-clone reproduction workflow, see:
+
+```text
+doc/reproducibility.md
+```
+
+The expected reproducibility model is:
+
+- source code and seed data are versioned
+- local SQLite databases are generated at runtime
+- plots and QSPR result tables are generated outputs
+- generated outputs are not required to clone, inspect, or rerun the project
+
 ## Linux Service Deployment
 
 The repository includes `setup_service.sh` for Linux environments that use `systemd`.
@@ -645,6 +665,18 @@ Files are stored under:
 - `data/qspr_results/<analysis_folder>/`
 - `data/plots/<analysis_folder>/`
 
+## Scientific References
+
+The project methodology and baseline comparison are primarily informed by:
+
+- Rasheed, M. W., Mahboob, A., & Hanif, I. (2023). An estimation of physicochemical properties of heart attack treatment medicines by using molecular descriptor's. South African Journal of Chemical Engineering, 45, 20-29. https://doi.org/10.1016/j.sajce.2023.04.003
+
+The local reference PDF is stored at:
+
+```text
+data/raw/reference/1-s2.0-S1026918523000276-main.pdf
+```
+
 ## Web Scraping Caveats
 
 You should treat the ingestion layer as best-effort scientific automation, not as a regulatory-grade source of truth.
@@ -672,6 +704,22 @@ For high-stakes or publication-grade work, manually review:
 - default local admin: `admin` / `admin123`
 - optional admin API guard: `ADMIN_API_KEY`
 
+## Citation
+
+If you use this repository in academic work, cite it using:
+
+```text
+CITATION.cff
+```
+
+Authors: Matheus de Prá Andrade, Heitor Ornaghi Jr., and Ademir José Zattera.
+
 ## License
+
+This project is released under the MIT License. See:
+
+```text
+LICENSE
+```
 
 This project is intended for research, experimentation, and academic use.
