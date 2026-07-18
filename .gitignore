@@ -34,3 +34,14 @@ scratch/
 .vscode/
 .idea/
 .DS_Store
+
+# -----------------------------------------------------------------------------
+# Desktop packaging and Tauri build directories
+# -----------------------------------------------------------------------------
+build/
+dist/
+*.spec
+src-tauri/target/
+src-tauri/binaries/
+frontend/dist/
+
