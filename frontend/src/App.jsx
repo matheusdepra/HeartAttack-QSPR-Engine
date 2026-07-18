@@ -32,9 +32,17 @@ function App() {
   const [analysisItems, setAnalysisItems] = useState([]);
 
   useEffect(() => {
-    const savedUser = localStorage.getItem(USER_STORAGE_KEY);
-    if (savedUser) {
-      setUser(JSON.parse(savedUser));
+    const isTauri = typeof window !== 'undefined' && (window.__TAURI_INTERNALS__ !== undefined || window.__TAURI__ !== undefined);
+    
+    if (isTauri) {
+      const mockTauriUser = { id: 1, username: "Local Researcher", role: "admin", name: "Local Researcher" };
+      setUser(mockTauriUser);
+      localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(mockTauriUser));
+    } else {
+      const savedUser = localStorage.getItem(USER_STORAGE_KEY);
+      if (savedUser) {
+        setUser(JSON.parse(savedUser));
+      }
     }
     fetchDrugs(true);
   }, []);
