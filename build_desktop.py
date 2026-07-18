@@ -7,6 +7,18 @@ from pathlib import Path
 
 ROOT_DIR = Path(__file__).resolve().parent
 
+# Force UTF-8 encoding on stdout/stderr to prevent emoji rendering errors on Windows terminals
+if hasattr(sys.stdout, 'reconfigure'):
+    try:
+        sys.stdout.reconfigure(encoding='utf-8')
+    except Exception:
+        pass
+if hasattr(sys.stderr, 'reconfigure'):
+    try:
+        sys.stderr.reconfigure(encoding='utf-8')
+    except Exception:
+        pass
+
 def get_target_triple():
     # Try rustc first
     try:

@@ -50,6 +50,7 @@ jobs:
       - name: Build Application
         run: python build_desktop.py
         env:
+          PYTHONIOENCODING: "utf-8"
           APPLE_IDENTITY_SIGNING: ""
 
       - name: Upload Artifacts
